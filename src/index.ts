@@ -1,19 +1,23 @@
 import {NodePath} from 'babel-traverse'
 
 import {Injector} from './injection-to-function'
+import {CalleeRenamer} from './callee-renamer'
 
 export default (babel) => {
     let injector: Injector
-
+    let calleeRenamer: CalleeRenamer
+    
     const classVisitor = {
         ClassMethod(nodePath) {
-            const n = nodePath.node
-            const name = `${this.className}#${n.key.name}`
+            const name = `${this.className}#${nodePath.node.key.name}`
             injector.injectionToFunction(nodePath, name)
         },
     }
 
     const visitor = {
+        CallExpression: (nodePath, state) => {
+            calleeRenamer.rename(nodePath)
+        },
         ClassDeclaration: nodePath => {
             nodePath.traverse(classVisitor, {className: nodePath.node.id.name})
         },
@@ -30,12 +34,10 @@ export default (babel) => {
                             nodePath.parent.type === 'VariableDeclarator' &&
                             nodePath.parentPath.get('id').isIdentifier()
                         ) {
-                            console.log(1)
                             name = `arrow function (${nodePath.parent.id.name})`
                             break
                         }
                         name = 'arrowFunction'
-
                         break
                     }
                     case 'ClassMethod': {
@@ -57,9 +59,9 @@ export default (babel) => {
         name: 'autodebugger',
         visitor,
         pre() {
-            injector = new Injector(babel, this.opts)
+            injector = new Injector(babel, this)
+            calleeRenamer = new CalleeRenamer(babel, this)
         },
     }
 }
 
-const visitor = {}

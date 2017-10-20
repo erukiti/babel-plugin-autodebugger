@@ -1,16 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const injection_to_function_1 = require("./injection-to-function");
+const callee_renamer_1 = require("./callee-renamer");
 exports.default = (babel) => {
     let injector;
+    let calleeRenamer;
     const classVisitor = {
         ClassMethod(nodePath) {
-            const n = nodePath.node;
-            const name = `${this.className}#${n.key.name}`;
+            const name = `${this.className}#${nodePath.node.key.name}`;
             injector.injectionToFunction(nodePath, name);
         },
     };
     const visitor = {
+        CallExpression: (nodePath, state) => {
+            calleeRenamer.rename(nodePath);
+        },
         ClassDeclaration: nodePath => {
             nodePath.traverse(classVisitor, { className: nodePath.node.id.name });
         },
@@ -25,7 +29,6 @@ exports.default = (babel) => {
                     case 'ArrowFunctionExpression': {
                         if (nodePath.parent.type === 'VariableDeclarator' &&
                             nodePath.parentPath.get('id').isIdentifier()) {
-                            console.log(1);
                             name = `arrow function (${nodePath.parent.id.name})`;
                             break;
                         }
@@ -49,9 +52,9 @@ exports.default = (babel) => {
         name: 'autodebugger',
         visitor,
         pre() {
-            injector = new injection_to_function_1.Injector(babel, this.opts);
+            injector = new injection_to_function_1.Injector(babel, this);
+            calleeRenamer = new callee_renamer_1.CalleeRenamer(babel, this);
         },
     };
 };
-const visitor = {};
 //# sourceMappingURL=index.js.map

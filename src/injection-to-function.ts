@@ -1,5 +1,4 @@
 import {NodePath} from 'babel-traverse'
-import * as log from 'babel-log'
 
 export class Injector {
     babel
@@ -21,6 +20,9 @@ export class Injector {
     }
 
     injectionToFunction(nodePath: NodePath, name: string) {
+        if (!nodePath.node || !nodePath.node.loc) {
+            return
+        }
         const getFills = (opts) => {
             return Object.assign({}, {
                 FILENAME: t.stringLiteral(this.filename),
@@ -34,9 +36,6 @@ export class Injector {
         }
 
         const {types: t, template, traverse} = this.babel
-        if (!nodePath.node || !nodePath.node.loc) {
-            return
-        }
 
         const n = nodePath.node
 

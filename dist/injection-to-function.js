@@ -14,6 +14,9 @@ class Injector {
         }
     }
     injectionToFunction(nodePath, name) {
+        if (!nodePath.node || !nodePath.node.loc) {
+            return;
+        }
         const getFills = (opts) => {
             return Object.assign({}, {
                 FILENAME: t.stringLiteral(this.filename),
@@ -26,9 +29,6 @@ class Injector {
             }, opts);
         };
         const { types: t, template, traverse } = this.babel;
-        if (!nodePath.node || !nodePath.node.loc) {
-            return;
-        }
         const n = nodePath.node;
         const params = t.ObjectExpression(nodePath.node.params.map(param => {
             if (t.isIdentifier(param)) {
