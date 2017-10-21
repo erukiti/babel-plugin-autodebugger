@@ -55,4 +55,31 @@ ava_1.default('', t => {
     const { code } = babel_core_1.transform(src, { plugins: [[index_1.default, opts]] });
     t.true(f(expected) === f(code));
 });
+ava_1.default('', t => {
+    const src = `
+const a = 1
+console.log(a / 0)
+    `.trim();
+    const opts = {
+        replaceProgram: `
+const {trace, trap} = require('autodebugger')
+try {
+    BODY
+} catch (e) {
+    trap(e)
+}
+        `.trim()
+    };
+    const expected = `
+    const {trace, trap} = require('autodebugger')
+    try {
+        const a = 1
+        console.log(a / 0)
+    } catch (e) {
+        trap(e)
+    }
+    `;
+    const { code } = babel_core_1.transform(src, { plugins: [[index_1.default, opts]] });
+    t.true(f(expected) === f(code));
+});
 //# sourceMappingURL=index.test.js.map

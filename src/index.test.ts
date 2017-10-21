@@ -61,3 +61,34 @@ test('', t => {
     const {code} = transform(src, {plugins: [[plugin, opts]]})
     t.true(f(expected) === f(code))
 })
+
+test('', t => {
+    const src = `
+const a = 1
+console.log(a / 0)
+    `.trim()
+
+    const opts = {
+        replaceProgram: `
+const {trace, trap} = require('autodebugger')
+try {
+    BODY
+} catch (e) {
+    trap(e)
+}
+        `.trim()
+    }
+
+    const expected = `
+    const {trace, trap} = require('autodebugger')
+    try {
+        const a = 1
+        console.log(a / 0)
+    } catch (e) {
+        trap(e)
+    }
+    `
+
+    const {code} = transform(src, {plugins: [[plugin, opts]]})
+    t.true(f(expected) === f(code))
+})

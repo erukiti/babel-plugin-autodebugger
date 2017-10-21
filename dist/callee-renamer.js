@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class CalleeRenamer {
     constructor(babel, pluginPass) {
         this.babel = babel;
-        this.opts = pluginPass.opts.renames;
+        this.opts = pluginPass.opts.renames || {};
         if (pluginPass.file) {
             this.filename = pluginPass.file.opts.filename;
         }

@@ -5,6 +5,7 @@ const callee_renamer_1 = require("./callee-renamer");
 exports.default = (babel) => {
     let injector;
     let calleeRenamer;
+    const { template } = babel;
     const classVisitor = {
         ClassMethod(nodePath) {
             const name = `${this.className}#${nodePath.node.key.name}`;
@@ -12,6 +13,19 @@ exports.default = (babel) => {
         },
     };
     const visitor = {
+        Program: {
+            exit: (nodePath, state) => {
+                if (state.opts.replaceProgram) {
+                    const body = template(state.opts.replaceProgram)({ BODY: nodePath.node.body });
+                    if (Array.isArray(body)) {
+                        nodePath.node.body = body;
+                    }
+                    else {
+                        nodePath.node.body = [body];
+                    }
+                }
+            }
+        },
         CallExpression: (nodePath, state) => {
             calleeRenamer.rename(nodePath);
         },

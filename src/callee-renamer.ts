@@ -7,7 +7,7 @@ export class CalleeRenamer {
 
     constructor(babel, pluginPass) {
         this.babel = babel
-        this.opts = pluginPass.opts.renames
+        this.opts = pluginPass.opts.renames || {}
         if (pluginPass.file) {
             this.filename = pluginPass.file.opts.filename
         } else {
