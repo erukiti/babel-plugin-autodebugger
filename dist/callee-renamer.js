@@ -15,22 +15,29 @@ class CalleeRenamer {
         if (!nodePath.node || !nodePath.node.loc) {
             return;
         }
+        const { types: t, template } = this.babel;
         const n = nodePath.node;
         const getFills = (opts) => {
             return Object.assign({}, {
                 FILENAME: t.stringLiteral(this.filename),
                 START_LINE: t.numericLiteral(n.loc.start.line),
-                START_COLUMN: t.numericLiteral(n.loc.start.column),
+                START_COLUMN: t.numericLiteral(n.loc.start.column + 1),
                 END_LINE: t.numericLiteral(n.loc.end.line),
-                END_COLUMN: t.numericLiteral(n.loc.end.column),
+                END_COLUMN: t.numericLiteral(n.loc.end.column + 1),
                 ARGS: nodePath.node.arguments,
+                CALLEE_NAME: t.stringLiteral(nodePath.get('callee').getSource() || 'unknown'),
+                CALLEE: nodePath.node.callee,
             }, opts);
         };
-        const { types: t, template } = this.babel;
+        // console.log(nodePath.getSource())
+        // console.log(nodePath.node.arguments)
         const callee = nodePath.get('callee');
         const key = Object.keys(this.opts).find(key => callee.matchesPattern(key));
         if (key) {
             nodePath.replaceWith(template(this.opts[key])(getFills({})));
+        }
+        else if ('*' in this.opts) {
+            nodePath.replaceWith(template(this.opts['*'])(getFills({})));
         }
     }
 }

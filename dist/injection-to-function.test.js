@@ -24,9 +24,9 @@ ava_1.default('default', t => {
     const opts = {};
     const expected = `
     const f = (a, b) => {
-        console.log("enter HOGE: unknown:1:10", {params: {a, b}})
+        console.log("enter HOGE: unknown:1:11", {params: {a, b}})
         const _temp = a + 1
-        console.log("exit  HOGE: unknown:1:25", {result: _temp})
+        console.log("exit  HOGE: unknown:1:26", {result: _temp})
         return _temp
     }
     `;
@@ -42,7 +42,7 @@ ava_1.default('opts', t => {
     };
     const expected = `
     const f = a => {
-        debug("HOGE", "unknown", 1, 10, 1, 20)
+        debug("HOGE", "unknown", 1, 11, 1, 21)
         const _temp = a + 1
         debug()
         return _temp

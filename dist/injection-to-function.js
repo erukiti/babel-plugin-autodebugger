@@ -22,9 +22,9 @@ class Injector {
                 FILENAME: t.stringLiteral(this.filename),
                 NAME: t.stringLiteral(name),
                 START_LINE: t.numericLiteral(n.loc.start.line),
-                START_COLUMN: t.numericLiteral(n.loc.start.column),
+                START_COLUMN: t.numericLiteral(n.loc.start.column + 1),
                 END_LINE: t.numericLiteral(n.loc.end.line),
-                END_COLUMN: t.numericLiteral(n.loc.end.column),
+                END_COLUMN: t.numericLiteral(n.loc.end.column + 1),
                 RESULT: t.nullLiteral(),
             }, opts);
         };

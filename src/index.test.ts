@@ -35,25 +35,25 @@ test('', t => {
 
     const expected = `
     async function hoge(url) {
-        debugLog({filename: "unknown", line: 2, column: 4, type: 'debug'}, 'enter', {params: {url}});
+        debugLog({filename: "unknown", line: 2, column: 5, type: 'debug'}, 'enter', {params: {url}});
         assert(typeof url === 'string');
         assert(URL.isValid(url));
         const res = await fetch(url);
         const text = await res.text();
-        debugLog({filename: "unknown", line: 8, column: 8, type: 'log'}, res);
-        debugLog({filename: "unknown", line: 9, column: 8, type: 'log'}, text);
+        debugLog({filename: "unknown", line: 8, column: 9, type: 'log'}, res);
+        debugLog({filename: "unknown", line: 9, column: 9, type: 'log'}, text);
       
         if (isHogePattern(text)) {
           const _temp = toFuga(text);
-          debugLog({filename: "unknown", line: 2, column: 4, type: 'debug'}, 'exit', {result: _temp});
+          debugLog({filename: "unknown", line: 2, column: 5, type: 'debug'}, 'exit', {result: _temp});
           return _temp;
         } else {
           const _temp2 = null;
-          debugLog({filename: "unknown", line: 2, column: 4, type: 'debug'}, 'exit', {result: _temp2});
+          debugLog({filename: "unknown", line: 2, column: 5, type: 'debug'}, 'exit', {result: _temp2});
           return _temp2;
         }
       
-        debugLog({filename: "unknown", line: 2, column: 4, type: 'debug'}, 'exit', {result: null});
+        debugLog({filename: "unknown", line: 2, column: 5, type: 'debug'}, 'exit', {result: null});
     }
     `
 

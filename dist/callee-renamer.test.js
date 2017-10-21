@@ -23,10 +23,10 @@ ava_1.default('default', t => {
     const src = 'console.log(1)';
     const opts = {
         renames: {
-            'console.log': `debugLog({filename: FILENAME, line: START_LINE, column: START_COLUMN, type: 'log'}, ARGS)`,
+            'console.log': `debugLog({filename: FILENAME, line: START_LINE, column: START_COLUMN, type: 'log', callee: CALLEE, calleeName: CALLEE_NAME}, ARGS)`,
         }
     };
-    const expected = `debugLog({filename: "unknown", line: 1, column: 0, type: 'log'}, 1)`;
+    const expected = `debugLog({filename: "unknown", line: 1, column: 1, type: 'log', callee: console.log, calleeName: "console.log"}, 1)`;
     const plugin = getPlugin();
     const { code } = babel_core_1.transform(src, { plugins: [[plugin, opts]] });
     t.true(f(expected) === f(code));
